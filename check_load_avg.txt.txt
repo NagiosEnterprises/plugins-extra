@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# Variables
+LOAD_AVG=""
+HOST=""
+WARN=""
+CRIT=""
+
+
+# Parse arguments
+while getopts "H:w:c:" arg; do
+  case $arg in
+    H) HOST=${OPTARG} ;;
+    w) WARN=${OPTARG} ;;
+    c) CRIT=${OPTARG} ;;
+  esac
+done
+
+
+# Validate args
+if [[ -z "$HOST" || -z "$WARN" || -z "$CRIT" ]]; then
+  echo "UNKNOWN - Invalid arguments. USAGE: $0 -H <host> -w <warning_threshold> -c <critical_threshold>"
+  echo "H: $HOST w: $WARN c: $CRIT"
+  exit 3
+fi
+
+
+# Set load average variable
+LOAD_AVG=$(uptime | awk -F 'load average: ' '{print $2}' | cut -d',' -f1)
+
+
+# Compare with thresholds
+if (( $(echo "$LOAD_AVG > $CRIT" | bc -l) )); then
+  echo "CRITICAL - Load Average is $LOAD_AVG in the last minute (threshold: $CRIT) | loadaverage=$LOAD_AVG"
+  exit 2
+elif (( $(echo "$LOAD_AVG > $WARN" | bc -l) )); then
+  echo "WARN - Load Average is $LOAD_AVG in the last minute (threshold: $WARN) | loadaverage=$LOAD_AVG"
+  exit 1
+else
+  echo "OK - Load Average is $LOAD_AVG in the last minute | loadaverage=$LOAD_AVG"
+  exit 0
+fi
