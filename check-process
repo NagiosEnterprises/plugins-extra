@@ -1,0 +1,34 @@
+param(
+    [string]$processName,
+    [int]$warningThreshold = 0
+)
+#check for prcess name, if none give print usage
+if (-not $processName) {
+    Write-Output "Usage: check-process -processName <processName> -warningThreshold <warningThreshold>"
+    exit 1
+}
+
+#command to get process using the provided name
+$processes = Get-Process -Name $processName -ErrorAction SilentlyContinue
+
+#check to see if the process is running
+if ($processes) {
+    #add up cpu usage of all processes with the provided name
+    $totalCpuUsage =($processes | Measure-Object -Property CPU -Sum).Sum
+
+    Write-Host "$processName is running with CPU usage: $totalCpuUsage"
+
+    #check if it passes the -w threshold
+    if ($warningThreshold -gt 0 -and $totalCpuUsage -gt $warningThreshold) {
+        Write-Host "WARNING: CPU usage of $processName is above the warning threshold of $warningThreshold"
+        exit 1
+    } else {
+        Write-Host "OK: CPU usage of $processName is below the warning threshold of $warningThreshold"
+        exit 0
+    }
+} else {
+    Write-Host "$processName is not running"
+    exit 2
+}
+
+   
