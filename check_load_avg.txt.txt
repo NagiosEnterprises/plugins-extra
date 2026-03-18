@@ -34,7 +34,7 @@ if (( $(echo "$LOAD_AVG > $CRIT" | bc -l) )); then
   echo "CRITICAL - Load Average is $LOAD_AVG in the last minute (threshold: $CRIT) | loadaverage=$LOAD_AVG"
   exit 2
 elif (( $(echo "$LOAD_AVG > $WARN" | bc -l) )); then
-  echo "WARN - Load Average is $LOAD_AVG in the last minute (threshold: $WARN) | loadaverage=$LOAD_AVG"
+  echo "WARNING - Load Average is $LOAD_AVG in the last minute (threshold: $WARN) | loadaverage=$LOAD_AVG"
   exit 1
 else
   echo "OK - Load Average is $LOAD_AVG in the last minute | loadaverage=$LOAD_AVG"
