@@ -2,15 +2,13 @@
 
 # Variables
 LOAD_AVG=""
-HOST=""
 WARN=""
 CRIT=""
 
 
 # Parse arguments
-while getopts "H:w:c:" arg; do
+while getopts "w:c:" arg; do
   case $arg in
-    H) HOST=${OPTARG} ;;
     w) WARN=${OPTARG} ;;
     c) CRIT=${OPTARG} ;;
   esac
@@ -18,9 +16,9 @@ done
 
 
 # Validate args
-if [[ -z "$HOST" || -z "$WARN" || -z "$CRIT" ]]; then
-  echo "UNKNOWN - Invalid arguments. USAGE: $0 -H <host> -w <warning_threshold> -c <critical_threshold>"
-  echo "H: $HOST w: $WARN c: $CRIT"
+if [[ -z "$WARN" || -z "$CRIT" ]]; then
+  echo "UNKNOWN - Invalid arguments. USAGE: $0 -w <warning_threshold> -c <critical_threshold>"
+  echo "w: $WARN c: $CRIT"
   exit 3
 fi
 
